@@ -28,17 +28,17 @@ public class MainQueryPageInput extends MainQueryPaginable {
 	 */
 	@Override
 	public void nextResult() {
-		int i = 0, j = 0;
+		int pageCount = 0, setKeysCount = 0;
 		String key;
 		for (Iterator<String> iterator = redisUtil.localKeys().iterator(); iterator
-				.hasNext() && (i >= 0 && i < pagesize); j++) {
+				.hasNext() && (pageCount >= 0 && pageCount < pagesize); setKeysCount++) {
 			key = iterator.next();
-			if (j > pageStart)
+			if (setKeysCount > setKeysStart)
 				if (redisUtil.isUseful(key, input, fieldsToFiltrate)) {
-					i++;
+					pageCount++;
 					System.out.println(Constants.getJedis().hgetAll(key));
 				}
 		}
-		pageStart += j;
+		setKeysStart += setKeysCount;
 	}
 }

@@ -10,12 +10,17 @@ public class MainQueryPage extends MainQueryPaginable {
 	 */
 	@Override
 	public void nextResult() {
-		int i = 0;
+		int pageCount = 0, setKeysCount = 0;
+		String key;
 		for (Iterator<String> iterator = redisUtil.localKeys().iterator(); iterator
-				.hasNext() && (i >= pageStart && i < pagesize + pageStart); i++) {
-			System.out.println(Constants.getJedis().hgetAll(iterator.next()));
+				.hasNext() && (pageCount >= 0 && pageCount < pagesize); setKeysCount++) {
+			key = iterator.next();
+			if (setKeysCount > setKeysStart) {
+				pageCount++;
+				System.out.println(Constants.getJedis().hgetAll(key));
+			}
 		}
-		pageStart = pagesize + pageStart;
+		setKeysStart += setKeysCount;
 	}
 
 }
